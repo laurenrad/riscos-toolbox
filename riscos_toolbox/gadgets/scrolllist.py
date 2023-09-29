@@ -36,6 +36,9 @@ class ScrollList(Gadget):
     def set_font(self, name, width, height):
         swi.swi('Toolbox_ObjectMiscOp','0iIisii', self.window.id,
                 16420, self.id, name, width, height)
+                
+    def count_items(self):
+        return self._miscop_get_int(16422)
 
     @property
     def multisel(self):
