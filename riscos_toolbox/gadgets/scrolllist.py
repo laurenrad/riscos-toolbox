@@ -32,6 +32,10 @@ class ScrollList(Gadget):
     def make_visible(self, index):
         swi.swi('Toolbox_ObjectMiscOp','0III',
                 self.window.id, 16417, self.id, index)
+                
+    def set_font(self, name, width, height):
+        swi.swi('Toolbox_ObjectMiscOp','0iIisii', self.window.id,
+                16420, self.id, name, width, height)
 
     @property
     def multisel(self):
