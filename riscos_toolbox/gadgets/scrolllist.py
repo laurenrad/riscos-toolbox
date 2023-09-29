@@ -6,6 +6,10 @@ import swi
 
 class ScrollList(Gadget):
     Selection = 0x140181
+    
+    # Method flags
+    SelectionChangingMethod_OnAll     = 2
+    SelectionChangingMethod_SendEvent = 1
 
     @property
     def state(self):
@@ -36,6 +40,29 @@ class ScrollList(Gadget):
     def set_font(self, name, width, height):
         swi.swi('Toolbox_ObjectMiscOp','0iIisii', self.window.id,
                 16420, self.id, name, width, height)
+                
+    # Select an item at the given index.
+    # If 'all' is true, select all and ignore index.
+    # If 'send_event' is true, a ScrollListSelectionEvent will be sent.
+    def select_item(self, index, all=False, send_event=False):        
+        flags = 0
+        if all:
+            flags |= ScrollList.SelectionChangingMethod_OnAll
+        if send_event:
+            flags |= ScrollList.SelectionChangingMethod_SendEvent
+        swi.swi('Toolbox_ObjectMiscOp','IiIii', flags, self.window.id,
+                16414, self.id, index)
+        
+    # Deselect an item at the given index.
+    # Uses the same optional arguments as select_item.        
+    def deselect_item(self, index, all=False, send_event=False):
+        flags = 0
+        if all:
+            flags |= ScrollList.SelectionChangingMethod_OnAll
+        if send_event:
+            flags |= ScrollList.SelectionChangingMethod_SendEvent
+        swi.swi('Toolbox_ObjectMiscOp','IiIii', flags, self.window.id,
+                16415, self.id, index)
                 
     def count_items(self):
         return self._miscop_get_int(16422)
