@@ -20,6 +20,22 @@ class ScrollList(Gadget):
     def state(self, state):
         swi.swi("Toolbox_ObjectMiscOp","0iIiI",
                 self.window.id, 16411, self.id, state)
+                
+    # The reason item text isn't a property is it needs an index, so
+    # there's no reasonable get operation for it.
+    def get_item_text(self, index):
+        # This is just _miscop_get_text but with an index
+        buf_size = swi.swi('Toolbox_ObjectMiscOp','0iIi00i;.....I',
+                           self.window.id,16421,self.id,index)
+        buffer = swi.block((buf_size+3)//4)
+        swi.swi('Toolbox_ObjectMiscOp', '0iIibii',
+                self.window.id, 16421, self.id, buffer, buf_size, index)
+        return buffer.nullstring()
+        
+    def set_item_text(self, index, string):
+        # Just _miscop_set_text but with an index
+        swi.swi('Toolbox_ObjectMiscOp', '0iIisi',
+                self.window.id, 16423, self.id, string, index)
 
     def add_item(self, text, index):
         swi.swi('Toolbox_ObjectMiscOp','0IIIs00I',
