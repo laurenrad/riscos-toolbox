@@ -20,6 +20,19 @@ class ScrollList(Gadget):
     def state(self, state):
         swi.swi("Toolbox_ObjectMiscOp","0iIiI",
                 self.window.id, 16411, self.id, state)
+    
+    # Returns a tuple containing (fg, bg)            
+    @property
+    def colour(self):
+        return swi.swi("Toolbox_ObjectMiscOp","0iIi;II",
+                       self.window.id, 16419, self.id)
+        
+    # Takes a tuple containing (fg, bg)
+    @colour.setter
+    def colour(self, colour):
+        fg, bg = colour
+        swi.swi("Toolbox_ObjectMiscOp","0iIiII",self.window.id,
+                16418, self.id, fg, bg)
                 
     # The reason item text isn't a property is it needs an index, so
     # there's no reasonable get operation for it.
